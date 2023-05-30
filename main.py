@@ -1,20 +1,20 @@
 
 from fastapi import FastAPI
 from app.api.router import api_router
-# from app.utils import producer
+from app.utils import producer
 
 app = FastAPI(title="chatgpt-web")
 app.include_router(api_router)
 
 
-# @app.on_event("startup")
-# async def startup():
-#     producer.start()
-#
-#
-# @app.on_event("shutdown")
-# async def shutdown():
-#     producer.shutdown()
+@app.on_event("startup")
+async def startup():
+    producer.start()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    producer.shutdown()
 
 
 if __name__ == '__main__':
