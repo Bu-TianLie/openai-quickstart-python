@@ -9,7 +9,7 @@ class RequestOptions(BaseModel):
 
 
 class RequestBodyAdGroup(BaseModel):
-    requestId: str = ""
+    #requestId: str = ""
     advertiser_id: int  # 广告主 ID
     campaign_id: int  # 广告计划 ID
     unit_name: str  # 广告组名称
@@ -21,7 +21,7 @@ class RequestBodyAdGroup(BaseModel):
 
 
 class RequestBodyAdPlan(BaseModel):
-    requestId: str = ""
+    #requestId: str = ""
     advertiser_id: int  # 广告主 ID
     campaign_name: str
     type: int
