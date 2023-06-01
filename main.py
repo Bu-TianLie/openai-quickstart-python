@@ -24,6 +24,6 @@ if __name__ == '__main__':
     # 官方推荐是用命令后启动 uvicorn main:app --host=127.0.0.1 --port=8150 --reload
     uvicorn.run(
         app=app,
-        host="localhost",
+        host="0.0.0.0",
         port=60001,
     )
