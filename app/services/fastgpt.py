@@ -1,12 +1,12 @@
 import re
-#import json
-import demjson
-import simplejson as json
+import json
+#import demjson
+#import simplejson as json
 import requests
 from pprint import pprint
 from datetime import datetime
 from app.settings import settings
-
+from app.model.adGroup import AdUnit
 
 class GPTServices:
     headers = {
@@ -18,20 +18,24 @@ class GPTServices:
         pass
 
     @staticmethod
-    def chat(prompts, apiname):
+    def chat(prompts, apiname, model_str):
         url = "https://doc.script.red/api/openapi/chat/chat"
         print(f"收到请求：{apiname}, {prompts}")
         payload = json.dumps({
             "modelId": "6465c1d710e8b538917e8c36",
             "isStream": False,
             "prompts": [
-                #{
-                #    "obj": "System",
-                #    "value": "你是一个专业的快手广告运营人员"
-                #},
+                {
+                    "obj": "System",
+                    "value": "你是一个专业的python开发工程师"
+                },
                 {
                     "obj": "Human",
-                    "value": f"创建快手{apiname}接口请求参数\n当前时间：{datetime.now()}\n要求：结合下文给定的部分参数，模拟生成一个接口请求参数，除了给定的参数外，其他参数模拟生成,参数不能是空值；每次生成的结果不能重复；输出格式为json代码,注意要生成合法标准的json数据格式;"},
+                    "value": f"创建快手{apiname}接口请求参数\n当前时间：{datetime.now()}\n要求：结合下文给定的部分参数，模拟生成一个接口请求用例，(要求必须符合下文中的pydantic model规则,如果有),除了给定的参数外，其他参数模拟生成,value不能为null；每次生成的结果不能重复；输出格式为json代码,注意要生成合法标准的json数据格式;"},
+                {
+                    "obj": "Human",
+                    "value": model_str
+                },
                 {
                     "obj": "Human",
                     "value": f"必填参数为:{prompts}"
@@ -50,13 +54,13 @@ class GPTServices:
             print(f"response: {response.json()}")
             data = response.json().get('data')
             # ret = re.sub(r"{\n|\n\n}", "", data)
-            ret = data.replace("\n","").replace(" ", "").replace("'",'"')
+            ret = data.replace("\n","").replace(" ", "").replace("'",'"').replace('null','')
             if ret:
                 data_str = re.search(r"(\{.*\})", ret)
                 if data_str:
                     print(data_str.group(0))
                     print(type(data_str.group(0)))
-                    new_data = demjson.encode(data_str.group(0))
+                    new_data = json.loads(json.dumps(eval(data_str.group(0))))
                     return {"code": 200, "statusText": "", "data": new_data}
         except Exception as e:
             print(e)

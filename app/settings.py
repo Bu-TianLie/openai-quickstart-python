@@ -1,8 +1,11 @@
+import os
+
 from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
     app_name: str = "openai-python"
+    PRODUCT_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     OPENAI_API_KEY: str = ""
     OPENAI_API_MODEL: str = "gpt-3.5-turbo"
     RQ_TOPIC: str = "yeeu-ad"
