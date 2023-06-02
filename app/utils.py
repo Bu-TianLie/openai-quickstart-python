@@ -17,7 +17,7 @@ def send_msg(tag, msg_body, request_id):
         print(f"msg_type:{type(msg_body)} msg: {msg_body}")
         msg.set_tags(tag)
         msg.set_keys(str(request_id))
-        msg.set_body(json.dumps(msg_body))
+        msg.set_body(json.dumps(msg_body).encode())
         ret = producer.send_sync(msg)
         print(f"send msg ret: {ret}")
     except Exception as e:

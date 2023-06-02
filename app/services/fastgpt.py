@@ -1,5 +1,7 @@
 import re
-import json
+#import json
+import demjson
+import simplejson as json
 import requests
 from pprint import pprint
 from datetime import datetime
@@ -29,7 +31,7 @@ class GPTServices:
                 #},
                 {
                     "obj": "Human",
-                    "value": f"创建快手{apiname}接口请求参数\n当前时间：{datetime.now()}\n要求：结合下文给定的部分参数，模拟生成一个接口请求参数，除了给定的参数外，其他参数模拟生成,参数不能是空值；每次生成的结果不能重复；输出格式为json;"},
+                    "value": f"创建快手{apiname}接口请求参数\n当前时间：{datetime.now()}\n要求：结合下文给定的部分参数，模拟生成一个接口请求参数，除了给定的参数外，其他参数模拟生成,参数不能是空值；每次生成的结果不能重复；输出格式为json代码,注意要生成合法标准的json数据格式;"},
                 {
                     "obj": "Human",
                     "value": f"必填参数为:{prompts}"
@@ -48,13 +50,14 @@ class GPTServices:
             print(f"response: {response.json()}")
             data = response.json().get('data')
             # ret = re.sub(r"{\n|\n\n}", "", data)
-            ret = data.replace("\n","").replace(" ", "")
+            ret = data.replace("\n","").replace(" ", "").replace("'",'"')
             if ret:
                 data_str = re.search(r"(\{.*\})", ret)
                 if data_str:
                     print(data_str.group(0))
-                    #new_data = json.loads(data_str.group(0))
-                    return {"code": 200, "statusText": "", "data": data_str.group(0)}
+                    print(type(data_str.group(0)))
+                    new_data = demjson.encode(data_str.group(0))
+                    return {"code": 200, "statusText": "", "data": new_data}
         except Exception as e:
             print(e)
             print("service fastgpt")

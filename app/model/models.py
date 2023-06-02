@@ -15,8 +15,8 @@ class RequestBodyAdGroup(BaseModel):
     unit_name: str  # 广告组名称
     bid_type: int  # 优化目标出价类型
     begin_time: str
-    day_budget: int
-    day_budget_schedule: int
+    #day_budget: int
+    #day_budget_schedule: int
     app_id: int
 
 
