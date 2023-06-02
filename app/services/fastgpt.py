@@ -1,8 +1,10 @@
 import re
-import json
+#import json
+import demjson
+import simplejson as json
 import requests
 from pprint import pprint
-
+from datetime import datetime
 from app.settings import settings
 
 
@@ -23,17 +25,16 @@ class GPTServices:
             "modelId": "6465c1d710e8b538917e8c36",
             "isStream": False,
             "prompts": [
-                {
-                    "obj": "System",
-                    "value": "你是一个专业的快手广告运营人员"
-                },
-                {
-                    "obj": "Human",
-                    "value": f"根据快手api{apiname}文档，生成用于创建{apiname}的json请求体，要求必须符合文档中的规则，保证所有参数都是文档中定义的"
-                },
+                #{
+                #    "obj": "System",
+                #    "value": "你是一个专业的快手广告运营人员"
+                #},
                 {
                     "obj": "Human",
-                    "value": prompts
+                    "value": f"创建快手{apiname}接口请求参数\n当前时间：{datetime.now()}\n要求：结合下文给定的部分参数，模拟生成一个接口请求参数，除了给定的参数外，其他参数模拟生成,参数不能是空值；每次生成的结果不能重复；输出格式为json代码,注意要生成合法标准的json数据格式;"},
+                {
+                    "obj": "Human",
+                    "value": f"必填参数为:{prompts}"
                 },
                 {
                     "obj": "Human",
@@ -49,15 +50,17 @@ class GPTServices:
             print(f"response: {response.json()}")
             data = response.json().get('data')
             # ret = re.sub(r"{\n|\n\n}", "", data)
-            ret = data.replace("\n")
+            ret = data.replace("\n","").replace(" ", "").replace("'",'"')
             if ret:
                 data_str = re.search(r"(\{.*\})", ret)
                 if data_str:
-                    print(data_str)
-                    new_data = json.loads(data_str.group(0))
-                    return {'code': 200, 'statusText': '', 'data': new_data}
+                    print(data_str.group(0))
+                    print(type(data_str.group(0)))
+                    new_data = demjson.encode(data_str.group(0))
+                    return {"code": 200, "statusText": "", "data": new_data}
         except Exception as e:
             print(e)
+            print("service fastgpt")
             return
 
 
